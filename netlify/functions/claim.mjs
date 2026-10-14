@@ -1,7 +1,7 @@
 import { Keypair, PublicKey, VersionedTransaction } from "@solana/web3.js";
 import nacl from "tweetnacl";
 import bs58 from "bs58";
-import { words, keyOf, ticker, cleanWord, validWord, expired, json } from "../lib/shared.mjs";
+import { words, keyOf, ticker, cleanWord, validWord, expired, json, market } from "../lib/shared.mjs";
 
 /*
   POST /api/claim  { word, wallet, message, signature }
@@ -25,6 +25,9 @@ export default async req => {
   if (!t || Math.abs(Date.now() - t) > 5 * 60 * 1000) return json({ error: "Signature expired. Sign again" }, 400);
   let ok = false; try { ok = nacl.sign.detached.verify(new TextEncoder().encode(message), bs58.decode(sig), pk.toBytes()); } catch {}
   if (!ok) return json({ error: "Signature check failed" }, 401);
+
+  /* words that are already real coins on Solana are taken */
+  try { if ((await market()).some(c => c.word === w)) return json({ error: `"${w}" is already a coin on Solana` }, 409); } catch {}
 
   /* 2. reserve */
   const store = words(), key = keyOf(w);

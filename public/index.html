@@ -80,6 +80,9 @@ body.in .tlab{opacity:1;transform:none}
 .pips span i{width:7px;height:7px;border-radius:50%;background:var(--mute)}
 .pips span.on{color:var(--tx);box-shadow:inset 0 0 0 1px var(--hi)}.pips span.on i{background:var(--hi);animation:pul 1s infinite}
 .pips span.ok{color:var(--up)}.pips span.ok i{background:var(--up)}
+.cap{display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 6px 0 14px;margin-top:14px;border-radius:999px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px var(--ln2);font:500 13px var(--m);color:var(--soft);max-width:100%}
+.cap b{color:var(--hi);font-weight:700}.cap span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cap button{height:30px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.1);font:700 12px var(--f);color:var(--tx);flex:none}.cap button:hover{background:var(--hi);color:#000}
 .ferr{font:500 13px var(--m);color:var(--dn);min-height:18px}
 .ov{position:fixed;inset:0;z-index:88;background:rgba(0,0,0,.66);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:grid;place-items:center;padding:16px;opacity:0;transition:opacity .3s}
 .ov.on{opacity:1}
@@ -152,6 +155,28 @@ body.in .kick,body.in .entry,body.in .act{opacity:1;transform:none}
 .cell:hover{background:var(--hi);color:#000;box-shadow:none;transform:translateY(-3px) rotate(-1deg)}
 .cell:hover small{color:#000}
 .cell.me{box-shadow:inset 0 0 0 2px var(--hi)}
+.list{margin-top:44px;border-top:1px solid var(--ln)}
+.row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) minmax(0,.7fr) 110px auto;gap:18px;align-items:center;padding:18px 4px;border-bottom:1px solid var(--ln);transition:background .2s}
+.row:hover{background:rgba(255,255,255,.025)}
+.row.me{box-shadow:inset 3px 0 0 var(--hi)}
+.row .wd{display:flex;align-items:baseline;gap:12px;min-width:0;cursor:pointer}
+.row .wd b{font:900 clamp(30px,3.4vw,48px)/1 var(--f);letter-spacing:-.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .wd span{font:700 13px var(--m);color:var(--hi);white-space:nowrap}
+.row .wd:hover b{color:var(--hi)}
+.row .ca2{display:flex;align-items:center;gap:8px;min-width:0;font:500 13px var(--m);color:var(--soft)}
+.row .ca2 em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .ca2 button{flex:none;height:28px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.08);font:700 11.5px var(--f);color:var(--tx)}
+.row .ca2 button:hover{background:var(--hi);color:#000}
+.row .by,.row .ago{font:500 12.5px var(--m);color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .vw{height:42px;padding:0 18px;border-radius:999px;background:var(--tx);color:#000;font-weight:800;font-size:14px;display:inline-flex;align-items:center;white-space:nowrap;transition:background .2s}
+.row .vw:hover{background:var(--hi)}
+.row .vw.off{background:rgba(255,255,255,.06);color:var(--mute);pointer-events:none}
+.lh{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) minmax(0,.7fr) 110px auto;gap:18px;padding:0 4px 12px;font:500 11px var(--m);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.lh span:last-child{width:110px}
+.more{display:block;margin:26px auto 0;height:48px;padding:0 24px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--ln2);font-weight:700;color:var(--soft)}
+.more:hover{color:#000;background:var(--hi);box-shadow:none}
+.empty2{padding:46px 4px;font:italic 26px var(--s);color:var(--soft);border-bottom:1px solid var(--ln)}
+@media (max-width:820px){.lh{display:none}.row{grid-template-columns:minmax(0,1fr) auto;gap:10px 14px}.row .ca2{grid-column:1/-1;order:3}.row .by,.row .ago{display:none}.row .vw{grid-row:1;grid-column:2}}
 
 /* rules strip */
 .rules{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid var(--ln)}
@@ -195,7 +220,7 @@ footer{position:relative;padding:70px 0 32px;overflow:hidden}
 <nav id="nav">
   <a class="logo" href="#top"><i>W</i>Word</a>
   <div class="nr">
-    <span class="cnt"><i></i><b id="nClaimed">0</b> claimed</span>
+    <span class="cnt"><i></i><b id="nClaimed">0</b> taken</span>
     <button class="wal" id="walB" type="button">Connect wallet</button>
   </div>
 </nav>
@@ -217,8 +242,9 @@ footer{position:relative;padding:70px 0 32px;overflow:hidden}
 <section class="wall" id="wall">
   <div class="wrap">
     <div class="wh rv"><h2 class="big">Already<br><em>taken.</em></h2>
-      <div class="tabs" id="tabs"><button class="on" data-s="mc">Top</button><button data-s="new">New</button><button data-s="short">Short</button></div></div>
-    <div class="grid rv" id="grid"></div>
+      <div class="tabs" id="tabs"><button class="on" data-s="top">Top</button><button data-s="new">New on Word</button><button data-s="short">Short</button></div></div>
+    <div class="list rv"><div class="lh"><span>Word</span><span>CA</span><span>Market cap</span><span>Where</span><span></span></div><div id="grid"></div></div>
+    <button class="more" id="more" type="button" hidden>Show more</button>
   </div>
 </section>
 
@@ -246,7 +272,8 @@ footer{position:relative;padding:70px 0 32px;overflow:hidden}
    If /api/words answers, the site runs live: real claims, real
    launches. If it doesn't (local file, preview), it runs a demo.
    ============================================================ */
-const CONFIG = { HANDLE: "@wordfun", SITE: "word.fun", API: "/api" };
+const CONFIG = { HANDLE: "@wordfun", SITE: "word.fun", API: "/api", VIEW_URL: "https://axiom.trade/meme/{ca}" };
+const viewUrl = ca => CONFIG.VIEW_URL.replace("{ca}", encodeURIComponent(ca));
 let LIVE = false;
 
 
@@ -273,9 +300,10 @@ const SEED = "moon sol gm based chad doge cat dog pepe love money rich send pump
 const FREEPOOL = "tuesday banana wizard pizza velvet thunder pickle saturn mango ghost rocket marble echo nova cactus waffle laser tiger lemon crystal hammer jelly orbit panda raven sushi tornado violet whale yeti zebra karma glitch chaos lunar riot vibe blink spark drift ember prism dusk".split(" ");
 const CLAIMED = new Map();
 const r0 = rng(42);
-[...new Set(SEED)].forEach((w, i) => { const mc = (i < 14 ? (14 - i) * 3.1e5 + r0() * 4e5 : Math.pow(r0(), 3) * 1.6e6) + 4e3 + (w.length < 4 ? 2e5 * r0() : 0); CLAIMED.set(w, { w, mc, ch: (r0() - .35) * 160, by: wal(w), t: Date.now() - (i * 1.7 + r0() * 30) * 3.6e6, me: false }); });
-store.get("word:mine", []).forEach(w => { if (!CLAIMED.has(w)) CLAIMED.set(w, { w, mc: 4200, ch: 0, by: "you", t: Date.now(), me: true }); else CLAIMED.get(w).me = true; });
-const updCount = () => $("nClaimed").textContent = (LIVE ? [...CLAIMED.values()].filter(c => !c.pending).length : CLAIMED.size + 48120).toLocaleString();
+/* real Solana coins whose ticker is a normal word come from the server (/api/market, DexScreener) */
+const addMarket = list => list.forEach(m => { const ex = CLAIMED.get(m.word); if (ex && !ex.ext) return; CLAIMED.set(m.word, { w: m.word, mint: m.ca, mc: m.mc ?? null, ch: m.ch ?? null, by: "Solana", t: m.at || 0, ext: true }); });
+store.get("word:mine", []).forEach(w => { if (!CLAIMED.has(w)) CLAIMED.set(w, { w, by: "you", t: Date.now(), me: true }); });
+const updCount = () => $("nClaimed").textContent = [...CLAIMED.values()].filter(c => !c.pending).length.toLocaleString();
 updCount();
 
 /* ---------- intro: slot letters lock into WORD ---------- */
@@ -335,19 +363,22 @@ function fit(){
 const clean = v => v.toLowerCase().replace(/[^a-z]/g, "").slice(0, 20);
 let busy = false;
 const TK = v => v.toUpperCase().slice(0, 10);
+function caPill(ca){ return ca ? `<div class="cap"><b>CA</b><span>${esc(ca)}</span><button type="button" id="bCa" data-ca="${esc(ca)}">Copy</button></div>` : ""; }
+function wireCa(){ const b = $("bCa"); if (b) b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.ca); toast("CA copied"); } catch { toast(b.dataset.ca); } }; }
 function render(){
   const v = W.value; TW.q = v; if (busy) return; stage.classList.remove("taken", "mine", "free"); stage.classList.toggle("typed", !!v);
   const E = $("entry"), A = $("act");
   if (!v) { E.innerHTML = `<i>noun.</i> any word you can think of`; A.innerHTML = ""; return; }
   const c = CLAIMED.get(v);
   if (c && c.me) { stage.classList.add("mine"); E.innerHTML = `<b class="free">YOURS</b> <span class="tk">$${esc(TK(v))}</span>${c.mint ? " · live on pump.fun" : " · claimed by you"}`;
-    A.innerHTML = `<button class="btn" id="bShare"><span>Post it on X</span></button>${c.mint ? `<a class="btn gh" href="https://pump.fun/coin/${esc(c.mint)}" target="_blank" rel="noopener"><span>View on pump.fun</span></a>` : ""}`;
-    $("bShare").onclick = () => postSheet(v); }
+    A.innerHTML = `<div class="flow"><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="btn" id="bShare"><span>Post it on X</span></button>${c.mint ? `<a class="btn gh" href="${esc(viewUrl(c.mint))}" target="_blank" rel="noopener"><span>View coin</span></a>` : ""}</div>${caPill(c.mint)}</div>`;
+    $("bShare").onclick = () => postSheet(v); wireCa(); }
   else if (c && c.pending) { stage.classList.add("taken"); E.innerHTML = `<b>CLAIMING</b> someone is launching <i>${esc(v)}</i> right now`; A.innerHTML = ""; }
   else if (c) { stage.classList.add("taken");
-    E.innerHTML = c.mc != null ? `<b>${fmt(c.mc)}</b> claimed by ${esc(c.by)} · <span style="color:${c.ch >= 0 ? "var(--up)" : "var(--dn)"};font-style:normal;font:700 15px var(--m)">${c.ch >= 0 ? "+" : ""}${c.ch.toFixed(1)}%</span>` : `<b>LIVE</b> claimed by ${esc(c.by)}`;
-    A.innerHTML = c.mint ? `<a class="btn" href="https://pump.fun/coin/${esc(c.mint)}" target="_blank" rel="noopener"><span>Buy $${esc(TK(v))}</span></a>` : `<button class="btn" id="bBuy"><span>Buy $${esc(TK(v))}</span></button>`;
-    const bb = $("bBuy"); if (bb) bb.onclick = () => toast("Opening $" + TK(v) + " on pump.fun"); }
+    const chg = c.ch != null ? ` · <span style="color:${c.ch >= 0 ? "var(--up)" : "var(--dn)"};font-style:normal;font:700 15px var(--m)">${c.ch >= 0 ? "+" : ""}${(+c.ch).toFixed(1)}%</span>` : "";
+    E.innerHTML = c.ext ? `<b>${c.mc ? fmt(c.mc) : "ON SOLANA"}</b> already a coin on Solana${chg}` : `<b>${c.mc ? fmt(c.mc) : "LIVE"}</b> claimed by ${esc(c.by)}${chg}`;
+    A.innerHTML = c.mint ? `<div class="flow"><a class="btn" href="${esc(viewUrl(c.mint))}" target="_blank" rel="noopener"><span>View $${esc(TK(v))}</span></a>${caPill(c.mint)}</div>` : `<button class="btn" id="bBuy"><span>View $${esc(TK(v))}</span></button>`;
+    const bb = $("bBuy"); if (bb) bb.onclick = () => toast("No CA yet"); wireCa(); }
   else { stage.classList.add("free"); E.innerHTML = `<b class="free">FREE</b> nobody has <i>${esc(v)}</i> yet`;
     A.innerHTML = `<button class="btn" id="bClaim"><span>Claim "${esc(v)}"</span></button>`; $("bClaim").onclick = () => claim(v); }
 }
@@ -424,12 +455,27 @@ async function loadLive(){
   try {
     const j = await api("/words");
     if (!Array.isArray(j.words)) return;
-    LIVE = true; CLAIMED.clear(); recent.length = 0;
+    LIVE = true;
+    const prevExt = [...CLAIMED.values()].filter(c => c.ext);
+    CLAIMED.clear();
     j.words.forEach(d => CLAIMED.set(d.word, { w: d.word, by: short(d.wallet), wallet: d.wallet, mint: d.mint, t: d.at, pending: d.status !== "live", me: !!(S.pk && d.wallet === S.pk) }));
-    [...CLAIMED.values()].filter(c => !c.pending).sort((a, b) => b.t - a.t).slice(0, 14).forEach(c => recent.push({ w: c.w, by: c.by }));
-    sortBy = "new"; document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x.dataset.s === "new"));
-    updCount(); paintMarq(); paintWall(); if (!busy) render();
+    prevExt.forEach(c => { if (!CLAIMED.has(c.w)) CLAIMED.set(c.w, c); });
+    refresh();
+    try {
+      const m = await api("/market");
+      if (Array.isArray(m.coins) && m.coins.length) { [...CLAIMED.values()].filter(c => c.ext).forEach(c => CLAIMED.delete(c.w)); addMarket(m.coins); }
+      CLAIMED.forEach(c => { const k = c.mint && m.caps?.[c.mint]; if (k && !c.ext) { c.mc = k.mc; c.ch = k.ch; } });
+      refresh();
+    } catch {}
   } catch {}
+}
+
+function refresh(){
+  recent.length = 0;
+  const own = [...CLAIMED.values()].filter(c => !c.pending && !c.ext).sort((a, b) => b.t - a.t);
+  const ext = [...CLAIMED.values()].filter(c => c.ext).sort((a, b) => (b.mc || 0) - (a.mc || 0));
+  [...own, ...ext].slice(0, 16).forEach(c => recent.push({ w: c.w, by: c.ext ? "Solana" : c.by, mc: c.mc }));
+  updCount(); paintMarq(); paintWall(); if (!busy) render();
 }
 
 /* ---------- claim flow: connect → sign → launch ---------- */
@@ -446,7 +492,7 @@ function claim(v){ busy = true; flowWord = v; flowUI(v, S.pk ? 1 : 0); }
 async function runFlow(v, step){
   try {
     if (step === 0) { flowUI(v, 0); await connectWallet(); step = 1; flowUI(v, 1); return; }
-    if (CLAIMED.has(v) && !CLAIMED.get(v).me) throw new Error(`"${v}" was just claimed by someone else`);
+    if (CLAIMED.has(v) && !CLAIMED.get(v).me) throw new Error(CLAIMED.get(v).ext ? `"${v}" is already a coin on Solana` : `"${v}" was just claimed by someone else`);
     const btn = $("bGo"); if (btn) { btn.disabled = true; btn.querySelector("span").textContent = "Check your wallet"; }
     const signed = await signClaim(v);
     flowUI(v, 2);
@@ -466,7 +512,7 @@ async function runFlow(v, step){
 
 /* ---------- post to X ---------- */
 const TPL = [
-  w => `I own the word "${w}".\n\nClaim your word → ${CONFIG.HANDLE}`,
+  (w, ca) => `I own the word "${w}".${ca ? `\n\nCA: ${ca}` : ""}\n\nClaim your word → ${CONFIG.HANDLE}`,
 ];
 let tplI = 0;
 function postSheet(v){
@@ -475,7 +521,7 @@ function postSheet(v){
   <div class="post"><textarea id="ptx" aria-label="Post text"></textarea></div>
   <div class="pr2"><button class="btn" id="pX" type="button"><span>Post on X</span></button><button class="btn gh" id="pCopy" type="button"><span>Copy</span></button><span class="pcount" id="pcnt"></span></div>`, true);
   const ta = $("ptx"), cnt = () => $("pcnt").textContent = ta.value.length + " / 280";
-  const set = () => { ta.value = TPL[tplI % TPL.length](v); cnt(); };
+  const set = () => { ta.value = TPL[tplI % TPL.length](v, CLAIMED.get(v)?.mint); cnt(); };
   set(); ta.addEventListener("input", cnt);
     $("pCopy").onclick = async () => { try { await navigator.clipboard.writeText(ta.value); toast("Copied"); } catch { ta.select(); toast("Selected. Press copy"); } };
   $("pX").onclick = () => { const a = document.createElement("a"); a.href = "https://x.com/intent/post?text=" + encodeURIComponent(ta.value); a.target = "_blank"; a.rel = "noopener"; a.click(); };
@@ -492,30 +538,35 @@ function burst(){
 }
 
 /* ---------- live claims marquee ---------- */
-const recent = [...CLAIMED.values()].sort((a, b) => b.t - a.t).slice(0, 14).map(c => ({ w: c.w, by: c.by, u: Math.abs(c.ch) }));
-function paintMarq(){ const h = recent.map(c => `<div class="ch"><b>${esc(c.w)}</b><small>${c.by === "you" ? "you" : esc(c.by)}</small>${c.u != null ? `<span class="u">+${c.u.toFixed(0)}%</span>` : ""}</div>`).join(""); $("marq").innerHTML = h + h; }
-function pushClaim(w, by){ recent.unshift({ w, by, u: LIVE ? null : R() * 20 }); recent.length = Math.min(recent.length, 14); paintMarq(); }
+const recent = [...CLAIMED.values()].slice(0, 16).map(c => ({ w: c.w, by: c.by, mc: c.mc }));
+function paintMarq(){ const h = recent.map(c => `<div class="ch"><b>${esc(c.w)}</b><small>$${esc(TK(c.w))}</small>${c.mc ? `<span class="u">${fmt(c.mc)}</span>` : `<small>${c.by === "you" ? "you" : esc(c.by)}</small>`}</div>`).join(""); $("marq").innerHTML = h + h; }
+function pushClaim(w, by){ recent.unshift({ w, by }); recent.length = Math.min(recent.length, 16); paintMarq(); }
 paintMarq();
-/* someone else claims a free word every few seconds */
-setInterval(() => { if (LIVE) return; const free = FREEPOOL.filter(w => !CLAIMED.has(w)); if (!free.length) return; const w = free[R() * free.length | 0];
-  CLAIMED.set(w, { w, mc: 4200 + R() * 9000, ch: R() * 40, by: wal(w + Date.now()), t: Date.now(), me: false }); pushClaim(w, wal(w + 1)); updCount(); paintWall();
-  if (W.value === w) { render(); toast(`Too slow. "${w}" just got claimed`); } }, 6500);
-
 /* ---------- the taken wall ---------- */
-let sortBy = "mc";
+let sortBy = "top", shown = 25;
+const ago = t => { const m = (Date.now() - t) / 6e4; return m < 1 ? "now" : m < 60 ? (m | 0) + "m" : m < 1440 ? (m / 60 | 0) + "h" : (m / 1440 | 0) + "d"; };
 function paintWall(){
-  let L = [...CLAIMED.values()];
-  L = L.filter(c => !c.pending);
-  const val = c => c.mc ?? 0;
-  if (sortBy === "mc") L.sort((a, b) => val(b) - val(a) || b.t - a.t); else if (sortBy === "new") L.sort((a, b) => b.t - a.t); else L = L.filter(c => c.w.length <= 3).sort((a, b) => val(b) - val(a) || b.t - a.t);
-  if (!L.length) { $("grid").innerHTML = `<p style="font:italic 26px var(--s);color:var(--soft)">Nothing yet. The first word is still up for grabs.</p>`; return; }
-  const mx = Math.max(1, ...L.map(val));
-  $("grid").innerHTML = L.slice(0, 64).map(c => { const s = c.mc != null ? 22 + Math.pow(c.mc / mx, .6) * 70 : Math.max(28, 72 - c.w.length * 4); return `<button class="cell${c.me ? " me" : ""}" data-w="${esc(c.w)}" style="font-size:${s.toFixed(0)}px">${esc(c.w)}<small>${c.mc != null ? fmt(c.mc) : esc(c.by)}</small></button>`; }).join("");
+  let L = [...CLAIMED.values()].filter(c => !c.pending);
+  if (sortBy === "top") L.sort((a, b) => (b.mc || 0) - (a.mc || 0) || (a.ext - b.ext) || b.t - a.t);
+  else if (sortBy === "new") L = L.filter(c => !c.ext).sort((a, b) => b.t - a.t);
+  else L.sort((a, b) => a.w.length - b.w.length || (b.mc || 0) - (a.mc || 0));
+  if (!L.length) { $("grid").innerHTML = `<div class="empty2">${sortBy === "new" ? "Nothing claimed on Word yet. The first word is still up for grabs." : "Nothing here yet."}</div>`; $("more").hidden = true; return; }
+  $("grid").innerHTML = L.slice(0, shown).map(c => `<div class="row${c.me ? " me" : ""}">
+    <div class="wd" data-w="${esc(c.w)}"><b>${esc(c.w)}</b><span>$${esc(TK(c.w))}</span></div>
+    <div class="ca2">${c.mint ? `<em>${esc(c.mint)}</em><button type="button" data-ca="${esc(c.mint)}">Copy</button>` : `<em>no CA yet</em>`}</div>
+    <div class="by" style="color:var(--tx);font-weight:700">${c.mc ? fmt(c.mc) : "—"}</div>
+    <div class="ago">${c.ext ? "Solana" : c.me ? "you · " + ago(c.t) : "Word · " + ago(c.t)}</div>
+    ${c.mint ? `<a class="vw" href="${esc(viewUrl(c.mint))}" target="_blank" rel="noopener">View coin</a>` : `<span class="vw off">View coin</span>`}
+  </div>`).join("");
+  $("more").hidden = L.length <= shown;
 }
-$("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; sortBy = b.dataset.s; document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b)); paintWall(); };
-$("grid").onclick = e => { const b = e.target.closest(".cell"); if (!b) return; W.value = b.dataset.w; fit(); render(); scrollTo({ top: 0, behavior: "smooth" }); };
+$("more").onclick = () => { shown += 25; paintWall(); };
+$("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; sortBy = b.dataset.s; shown = 25; document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b)); paintWall(); };
+$("grid").onclick = async e => {
+  const cp = e.target.closest("[data-ca]"); if (cp) { try { await navigator.clipboard.writeText(cp.dataset.ca); toast("CA copied"); } catch { toast(cp.dataset.ca); } return; }
+  const w = e.target.closest(".wd"); if (w) { W.value = w.dataset.w; fit(); render(); scrollTo({ top: 0, behavior: "smooth" }); }
+};
 paintWall();
-setInterval(() => { if (LIVE) return; CLAIMED.forEach(c => { c.mc *= 1 + (R() - .47) * .03; c.ch += (R() - .47) * 2; }); if (W.value && CLAIMED.has(W.value) && !CLAIMED.get(W.value).me) render(); }, 1600);
 
 /* ---------- cursor, buttons, reveals ---------- */
 const cur = $("cur"); let cx = -99, cy = -99, ccx = -99, ccy = -99;
